@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Journal — VITA Reading Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1a2952;
+    --orange: #E8722A;
+    --orange-light: #FEF0E6;
+    --cream: #FDFAF6;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e0d8;
+    --white: #ffffff;
+    --entry-a: #2E6B4F;
+    --entry-a-light: #EDF7F2;
+    --entry-b: #1a5c8a;
+    --entry-b-light: #EAF3FB;
+    --entry-c: #7B3FA0;
+    --entry-c-light: #F5EEFB;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--navy);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(232,114,42,0.12);
+  }
+
+  .site-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 20%;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 24px 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .brand {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .grade-badge {
+    background: rgba(232,114,42,0.18);
+    color: #FFB17A;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(232,114,42,0.3);
+  }
+
+  .header-title {
+    font-family: 'Lora', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .header-sub {
+    font-size: 13px;
+    color: #94a3c0;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  /* ENTRY TYPE SELECTOR */
+  .type-selector-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+  }
+
+  .type-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .type-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .type-tab {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    cursor: pointer;
+    background: var(--white);
+    transition: all 0.2s;
+    text-align: left;
+  }
+
+  .type-tab:hover {
+    border-color: var(--orange);
+    transform: translateY(-1px);
+  }
+
+  .type-tab.active-a { border-color: var(--entry-a); background: var(--entry-a-light); }
+  .type-tab.active-b { border-color: var(--entry-b); background: var(--entry-b-light); }
+  .type-tab.active-c { border-color: var(--entry-c); background: var(--entry-c-light); }
+
+  .tab-letter {
+    display: inline-block;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 22px;
+    margin-bottom: 6px;
+    background: var(--border);
+    color: var(--muted);
+  }
+
+  .type-tab.active-a .tab-letter { background: var(--entry-a); color: white; }
+  .type-tab.active-b .tab-letter { background: var(--entry-b); color: white; }
+  .type-tab.active-c .tab-letter { background: var(--entry-c); color: white; }
+
+  .tab-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .tab-hint {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.4;
+    display: block;
+  }
+
+  /* MAIN FORM */
+  .form-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 20px 24px 48px;
+  }
+
+  /* BOOK INFO SECTION */
+  .section-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Lora', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .field-grid.three { grid-template-columns: 2fr 1fr 1fr; }
+  .field-grid.full { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .field label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .field input, .field select, .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 11px;
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--navy);
+    background: var(--white);
+  }
+
+  .field textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  /* ENTRY TYPE PANELS */
+  .entry-panel {
+    display: none;
+  }
+
+  .entry-panel.visible { display: block; }
+
+  .entry-header {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .entry-header.type-a { background: var(--entry-a-light); border-left: 3px solid var(--entry-a); }
+  .entry-header.type-b { background: var(--entry-b-light); border-left: 3px solid var(--entry-b); }
+  .entry-header.type-c { background: var(--entry-c-light); border-left: 3px solid var(--entry-c); }
+
+  .entry-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .type-a .entry-icon { background: var(--entry-a); }
+  .type-b .entry-icon { background: var(--entry-b); }
+  .type-c .entry-icon { background: var(--entry-c); }
+
+  .entry-header-text {}
+
+  .entry-type-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .type-a .entry-type-label { color: var(--entry-a); }
+  .type-b .entry-type-label { color: var(--entry-b); }
+  .type-c .entry-type-label { color: var(--entry-c); }
+
+  .entry-type-name {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .entry-type-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* PROMPT BOX */
+  .prompt-box {
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .prompt-box.type-a { background: var(--entry-a-light); border: 1px solid rgba(46,107,79,0.2); color: #1a4d35; }
+  .prompt-box.type-b { background: var(--entry-b-light); border: 1px solid rgba(26,92,138,0.2); color: #0f3d5c; }
+  .prompt-box.type-c { background: var(--entry-c-light); border: 1px solid rgba(123,63,160,0.2); color: #4a1f6e; }
+
+  .prompt-box strong {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    opacity: 0.75;
+  }
+
+  /* CHAR COUNTER */
+  .char-counter {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  /* SELF RATING */
+  .rating-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .rating-label {
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .stars {
+    display: flex;
+    gap: 4px;
+  }
+
+  .star {
+    width: 28px; height: 28px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s;
+    color: var(--muted);
+  }
+
+  .star:hover, .star.lit { border-color: var(--orange); background: var(--orange-light); color: var(--orange); }
+
+  /* SUBMIT */
+  .submit-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .submit-note {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 340px;
+    line-height: 1.5;
+  }
+
+  .btn-submit {
+    background: var(--navy);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 11px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-submit:hover { background: #263d6e; transform: translateY(-1px); }
+  .btn-submit:active { transform: translateY(0); }
+
+  /* SUCCESS */
+  .success-banner {
+    display: none;
+    background: var(--entry-a-light);
+    border: 1px solid rgba(46,107,79,0.25);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--entry-a);
+    font-weight: 500;
+    text-align: center;
+  }
+
+  /* READING TIPS SIDEBAR */
+  .tips-strip {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+
+  .tips-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .tip-item {
+    font-size: 11px;
+    color: #94a3c0;
+    line-height: 1.5;
+    padding-left: 10px;
+    border-left: 2px solid rgba(232,114,42,0.4);
+  }
+
+  .tip-item strong {
+    display: block;
+    color: #c8d4e8;
+    margin-bottom: 2px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 600px) {
+    .field-grid { grid-template-columns: 1fr; }
+    .field-grid.three { grid-template-columns: 1fr; }
+    .type-tabs { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .header-title { font-size: 22px; }
+  }
+
+  /* PAGE LOAD ANIMATION */
+  .section-card, .entry-header, .tips-strip {
+    animation: fadeUp 0.3s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-card:nth-child(2) { animation-delay: 0.05s; }
+  .section-card:nth-child(3) { animation-delay: 0.1s; }
+  .section-card:nth-child(4) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-top">
+      <span class="brand">VITA Reading Club</span>
+      <span class="grade-badge">Grade 11 · Reading Program</span>
+    </div>
+    <h1 class="header-title">Reading Journal</h1>
+    <p class="header-sub">Complete one entry per reading session. Be honest — your thinking matters more than your summary.</p>
+  </div>
+</header>
+
+<div class="type-selector-wrap">
+  <p class="type-label">Step 1 — Choose your entry type for this session</p>
+  <div class="type-tabs">
+    <div class="type-tab" id="tab-a" onclick="selectType('a')">
+      <span class="tab-letter" id="letter-a">A</span>
+      <span class="tab-name">Passage Response</span>
+      <span class="tab-hint">Pick a line that struck you and explain why</span>
+    </div>
+    <div class="type-tab" id="tab-b" onclick="selectType('b')">
+      <span class="tab-letter" id="letter-b">B</span>
+      <span class="tab-name">Prediction & Tension</span>
+      <span class="tab-hint">Identify what's unresolved and predict what comes next</span>
+    </div>
+    <div class="type-tab" id="tab-c" onclick="selectType('c')">
+      <span class="tab-letter" id="letter-c">C</span>
+      <span class="tab-name">Personal Connection</span>
+      <span class="tab-hint">Connect your reading to your own life or another text</span>
+    </div>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <!-- BOOK INFO -->
+  <div class="section-card">
+    <p class="section-title"><span class="section-dot"></span>Book & session details</p>
+    <div class="field-grid three">
+      <div class="field">
+        <label>Book Title</label>
+        <input type="text" id="book-title" placeholder="e.g. The Alchemist">
+      </div>
+      <div class="field">
+        <label>Author</label>
+        <input type="text" id="author" placeholder="e.g. Paulo Coelho">
+      </div>
+      <div class="field">
+        <label>Genre</label>
+        <select id="genre">
+          <option value="">Select...</option>
+          <option>Fiction — Novel</option>
+          <option>Fiction — Short Stories</option>
+          <option>Non-fiction</option>
+          <option>Biography / Memoir</option>
+          <option>Science / Technology</option>
+          <option>Self-improvement</option>
+          <option>History</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-grid" style="margin-top:12px;">
+      <div class="field">
+        <label>Pages Read Today (from → to)</label>
+        <input type="text" id="pages" placeholder="e.g. pages 47 – 68">
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="session-date">
+      </div>
+    </div>
+    <div class="field-grid full" style="margin-top:12px;">
+      <div class="field">
+        <label>Student Name</label>
+        <input type="text" id="student-name" placeholder="Your full name">
+      </div>
+    </div>
+  </div>
+
+  <!-- READING TIPS -->
+  <div class="tips-strip">
+    <p class="tips-label">While you read — keep these in mind</p>
+    <div class="tips-grid">
+      <div class="tip-item"><strong>Notice surprises</strong>What did you not expect? Mark it.</div>
+      <div class="tip-item"><strong>Feel the tension</strong>What question hasn't been answered yet?</div>
+      <div class="tip-item"><strong>Find your moment</strong>One line that could belong to your own life.</div>
+    </div>
+  </div>
+
+  <!-- ENTRY TYPE PANELS -->
+
+  <!-- TYPE A -->
+  <div class="entry-panel" id="panel-a">
+    <div class="section-card">
+      <div class="entry-header type-a">
+        <div class="type-a">
+          <div class="entry-icon">📖</div>
+        </div>
+        <div class="entry-header-text">
+          <p class="entry-type-label">Entry Type A</p>
+          <p class="entry-type-name">Passage Response</p>
+          <p class="entry-type-desc">Choose one sentence or short passage from today's reading that surprised you, confused you, or stayed in your mind. Write it down and explain why you chose it.</p>
+        </div>
+      </div>
+
+      <div class="prompt-box type-a">
+        <strong>Your task</strong>
+        Find a passage that made you stop — even briefly. It does not need to be the most important line in the book. It just needs to be the one that affected you most today.
+      </div>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label>The Passage (copy it exactly from the book)</label>
+        <textarea id="a-passage" rows="3" placeholder='"Write the exact sentence or short passage here..."' oninput="count('a-passage','a-passage-count',200)"></textarea>
+        <p class="char-counter" id="a-passage-count">0 / 200 characters</p>
+      </div>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label>Why did you choose this passage? What did it make you think or feel?</label>
+        <textarea id="a-why" rows="5" placeholder="Explain in 3–5 sentences. Avoid just summarising — say what effect the passage had on you and why..." oninput="count('a-why','a-why-count',600)"></textarea>
+        <p class="char-counter" id="a-why-count">0 / 600 characters</p>
+      </div>
+
+      <div class="field">
+        <label>Does this passage connect to anything outside the book — your life, the news, another text?</label>
+        <textarea id="a-connect" rows="3" placeholder="Optional but encouraged. Be specific — not just 'this reminds me of my life' but how and why..." oninput="count('a-connect','a-connect-count',400)"></textarea>
+        <p class="char-counter" id="a-connect-count">0 / 400 characters</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPE B -->
+  <div class="entry-panel" id="panel-b">
+    <div class="section-card">
+      <div class="entry-header type-b">
+        <div class="type-b">
+          <div class="entry-icon">🔍</div>
+        </div>
+        <div class="entry-header-text">
+          <p class="entry-type-label">Entry Type B</p>
+          <p class="entry-type-name">Prediction & Tension</p>
+          <p class="entry-type-desc">Identify the biggest unresolved question in your reading — something the book has raised but not yet answered. Then make a specific, reasoned prediction.</p>
+        </div>
+      </div>
+
+      <div class="prompt-box type-b">
+        <strong>Your task</strong>
+        Surface readers cannot do this task well. Finding real tension in a text requires you to have read carefully enough to notice what is being withheld — a character's true motive, a conflict that hasn't resolved, an idea that keeps returning without explanation.
+      </div>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label>What is the biggest unresolved question in your reading today?</label>
+        <textarea id="b-question" rows="3" placeholder="State the question clearly. It should be something the book has deliberately not answered yet, not just information you missed..." oninput="count('b-question','b-question-count',400)"></textarea>
+        <p class="char-counter" id="b-question-count">0 / 400 characters</p>
+      </div>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label>What evidence from the text makes you think this question matters?</label>
+        <textarea id="b-evidence" rows="4" placeholder="Point to specific moments, details, or patterns in the text that created this tension — not just your feeling, but what the author actually did..." oninput="count('b-evidence','b-evidence-count',500)"></textarea>
+        <p class="char-counter" id="b-evidence-count">0 / 500 characters</p>
+      </div>
+
+      <div class="field">
+        <label>Your prediction — how do you think this will be resolved, and why?</label>
+        <textarea id="b-predict" rows="4" placeholder="Make a specific prediction. Avoid vague answers like 'I think it will end well.' Say exactly what you think will happen and give at least one reason from the text..." oninput="count('b-predict','b-predict-count',500)"></textarea>
+        <p class="char-counter" id="b-predict-count">0 / 500 characters</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPE C -->
+  <div class="entry-panel" id="panel-c">
+    <div class="section-card">
+      <div class="entry-header type-c">
+        <div class="type-c">
+          <div class="entry-icon">🔗</div>
+        </div>
+        <div class="entry-header-text">
+          <p class="entry-type-label">Entry Type C</p>
+          <p class="entry-type-name">Personal Connection</p>
+          <p class="entry-type-desc">Connect something specific from today's reading to your own experience, a current event, or another text you know. The connection must be precise and argued, not just mentioned.</p>
+        </div>
+      </div>
+
+      <div class="prompt-box type-c">
+        <strong>Your task</strong>
+        The connection must be specific. "This reminds me of my life" is not enough. You must say exactly what in the text connects to exactly what in your experience — and explain why that connection is meaningful, not just obvious.
+      </div>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label>What moment, idea, or character from today's reading are you connecting?</label>
+        <textarea id="c-from-book" rows="3" placeholder="Describe the specific moment or idea from the text. Include a page reference if possible..." oninput="count('c-from-book','c-from-book-count',400)"></textarea>
+        <p class="char-counter" id="c-from-book-count">0 / 400 characters</p>
+      </div>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label>What are you connecting it to? (Your life / current event / another text)</label>
+        <textarea id="c-connect-to" rows="3" placeholder="Be specific. Name the event, situation, or text. Give enough detail that a reader who doesn't know you could understand the connection..." oninput="count('c-connect-to','c-connect-to-count',400)"></textarea>
+        <p class="char-counter" id="c-connect-to-count">0 / 400 characters</p>
+      </div>
+
+      <div class="field">
+        <label>Why does this connection matter? What does it help you understand about either the book or your own experience?</label>
+        <textarea id="c-meaning" rows="5" placeholder="This is the most important part. Don't just state the connection — explain what it reveals. What do you understand better now because of making this connection?" oninput="count('c-meaning','c-meaning-count',600)"></textarea>
+        <p class="char-counter" id="c-meaning-count">0 / 600 characters</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLECTION (shared) -->
+  <div class="section-card" id="reflection-section" style="display:none;">
+    <p class="section-title"><span class="section-dot"></span>Quick reflection</p>
+
+    <div class="field" style="margin-bottom:16px;">
+      <label>How engaged were you with today's reading?</label>
+      <div class="rating-row" style="margin-top:6px;">
+        <span class="rating-label">Not at all</span>
+        <div class="stars" id="stars">
+          <div class="star" onclick="rate(1)">1</div>
+          <div class="star" onclick="rate(2)">2</div>
+          <div class="star" onclick="rate(3)">3</div>
+          <div class="star" onclick="rate(4)">4</div>
+          <div class="star" onclick="rate(5)">5</div>
+        </div>
+        <span class="rating-label">Fully absorbed</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>One word that describes your reading experience today</label>
+      <input type="text" id="one-word" placeholder="e.g. confused, curious, moved, bored, surprised...">
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="section-card" id="submit-section" style="display:none;">
+    <div class="submit-area">
+      <p class="submit-note">Make sure all fields are complete. Your teacher will read your entry before the next class.</p>
+      <button class="btn-submit" onclick="submitForm()">Submit Entry →</button>
+    </div>
+    <div class="success-banner" id="success-banner">
+      ✓ &nbsp; Entry submitted successfully. See you next session.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentType = null;
+  let rating = 0;
+
+  // Set today's date
+  document.getElementById('session-date').valueAsDate = new Date();
+
+  function selectType(type) {
+    currentType = type;
+
+    // Update tabs
+    ['a','b','c'].forEach(t => {
+      document.getElementById('tab-' + t).className = 'type-tab' + (t === type ? ' active-' + type : '');
+    });
+
+    // Show/hide panels
+    ['a','b','c'].forEach(t => {
+      document.getElementById('panel-' + t).classList.toggle('visible', t === type);
+    });
+
+    document.getElementById('reflection-section').style.display = 'block';
+    document.getElementById('submit-section').style.display = 'block';
+
+    // Smooth scroll to entry
+    setTimeout(() => {
+      document.getElementById('panel-' + type).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+
+  function count(inputId, counterId, max) {
+    const val = document.getElementById(inputId).value.length;
+    document.getElementById(counterId).textContent = val + ' / ' + max + ' characters';
+  }
+
+  function rate(n) {
+    rating = n;
+    document.querySelectorAll('.star').forEach((s, i) => {
+      s.classList.toggle('lit', i < n);
+    });
+  }
+
+  async function submitForm() {
+    if (!currentType) { alert('Please select an entry type first.'); return; }
+
+    const name = document.getElementById('student-name').value.trim();
+    const title = document.getElementById('book-title').value.trim();
+    if (!name || !title) {
+      alert('Please fill in your name and book title before submitting.');
+      return;
+    }
+
+    const btn = document.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const entryLabels = { a: 'A — Passage Response', b: 'B — Prediction & Tension', c: 'C — Personal Connection' };
+
+    const data = {
+      'Student Name': name,
+      'Book Title': title,
+      'Author': document.getElementById('author').value,
+      'Genre': document.getElementById('genre').value,
+      'Pages Read': document.getElementById('pages').value,
+      'Date': document.getElementById('session-date').value,
+      'Entry Type': entryLabels[currentType],
+      'Engagement Rating': rating + ' / 5',
+      'One Word': document.getElementById('one-word').value,
+    };
+
+    if (currentType === 'a') {
+      data['Passage Chosen'] = document.getElementById('a-passage').value;
+      data['Why This Passage'] = document.getElementById('a-why').value;
+      data['Connection'] = document.getElementById('a-connect').value;
+    } else if (currentType === 'b') {
+      data['Unresolved Question'] = document.getElementById('b-question').value;
+      data['Evidence From Text'] = document.getElementById('b-evidence').value;
+      data['Prediction'] = document.getElementById('b-predict').value;
+    } else if (currentType === 'c') {
+      data['Moment From Book'] = document.getElementById('c-from-book').value;
+      data['Connected To'] = document.getElementById('c-connect-to').value;
+      data['Why It Matters'] = document.getElementById('c-meaning').value;
+    }
+
+    try {
+      const response = await fetch('https://formspree.io/f/mvzdojel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        document.getElementById('success-banner').style.display = 'block';
+        btn.textContent = 'Submitted ✓';
+        btn.style.background = '#2E6B4F';
+        document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Submit Entry →';
+        alert('Something went wrong. Please check your internet connection and try again.');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Submit Entry →';
+      alert('Could not connect. Please check your internet and try again.');
+    }
+  }
+</script>
+
+</body>
+</html>
