@@ -1,0 +1,381 @@
+
+<h2 class="sr-only">WanderPair — Couple Travel Itinerary App untuk Singapore, Malaysia, Vietnam</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{font-family:var(--font-sans);background:var(--color-background-tertiary);min-height:600px}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-size:15px;font-weight:500;color:var(--color-text-primary);white-space:nowrap}
+.logo span{color:#1D9E75}
+.tabs{display:flex;gap:3px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:3px;flex-shrink:0}
+.tab{padding:5px 12px;font-size:12px;border:none;background:transparent;cursor:pointer;border-radius:6px;color:var(--color-text-secondary);font-family:var(--font-sans);white-space:nowrap}
+.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500;border:0.5px solid var(--color-border-tertiary)}
+.content{padding:16px}
+.section{display:none}
+.section.active{display:block}
+
+.panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:18px;margin-bottom:14px}
+.panel-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11px;color:var(--color-text-secondary);font-weight:500}
+.fg input,.fg select{font-size:13px;padding:7px 9px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.pref-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.pref-tag{padding:4px 11px;font-size:12px;border:0.5px solid var(--color-border-tertiary);border-radius:20px;cursor:pointer;color:var(--color-text-secondary);background:var(--color-background-primary);font-family:var(--font-sans)}
+.pref-tag.on{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5}
+.gen-btn{width:100%;padding:10px;background:#1D9E75;color:#fff;border:none;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font-sans)}
+.gen-btn:hover{background:#0F6E56}
+.gen-btn:disabled{background:var(--color-background-secondary);color:var(--color-text-tertiary);cursor:not-allowed}
+
+.spinner-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:36px}
+.spinner{width:26px;height:26px;border:2px solid var(--color-border-tertiary);border-top-color:#1D9E75;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-text{font-size:13px;color:var(--color-text-secondary)}
+
+.result-panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:18px;margin-bottom:14px}
+.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.result-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.use-btn{padding:6px 13px;font-size:12px;background:#1D9E75;color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer;font-family:var(--font-sans)}
+.day-block{border-left:2px solid #9FE1CB;padding-left:14px;margin-bottom:14px}
+.day-label{font-size:12px;font-weight:500;color:#0F6E56;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cbadge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.sg{background:#E6F1FB;color:#185FA5}
+.my{background:#FAEEDA;color:#854F0B}
+.vn{background:#FAECE7;color:#993C1D}
+.act-list{display:flex;flex-direction:column;gap:3px}
+.act-item{font-size:12px;color:var(--color-text-primary);padding:5px 9px;background:var(--color-background-secondary);border-radius:6px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;line-height:1.5}
+.act-time{font-size:11px;color:var(--color-text-tertiary);white-space:nowrap;flex-shrink:0}
+.err-box{background:var(--color-background-danger);border:0.5px solid var(--color-border-danger);border-radius:var(--border-radius-md);padding:12px 14px;font-size:13px;color:var(--color-text-danger);margin-bottom:14px}
+
+.day-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:10px;overflow:hidden}
+.day-head{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-bottom:0.5px solid var(--color-border-tertiary)}
+.day-head-l{display:flex;align-items:center;gap:8px}
+.day-num{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.day-body{padding:12px 14px}
+.act-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.act-row:last-child{border-bottom:none}
+.time-in{width:72px;font-size:12px;padding:4px 6px;border:0.5px solid var(--color-border-tertiary);border-radius:6px;background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.act-in{flex:1;font-size:12px;padding:4px 7px;border:0.5px solid var(--color-border-tertiary);border-radius:6px;background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.del-btn{width:22px;height:22px;border:none;background:transparent;color:var(--color-text-tertiary);cursor:pointer;border-radius:4px;font-size:13px;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);flex-shrink:0}
+.del-btn:hover{background:var(--color-background-danger);color:var(--color-text-danger)}
+.add-btn{margin-top:8px;padding:5px 10px;font-size:11px;border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-family:var(--font-sans)}
+.add-btn:hover{background:var(--color-background-secondary)}
+
+.bg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.bc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.bc h4{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px}
+.rate-row{display:flex;justify-content:space-between;margin-bottom:10px}
+.rate-l{font-size:12px;color:var(--color-text-secondary)}
+.rate-v{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.bi-row{display:flex;flex-direction:column;gap:5px;margin-bottom:7px}
+.bi-row label{font-size:11px;color:var(--color-text-secondary)}
+.bi-row input{font-size:12px;padding:5px 7px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.total-panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.tot-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px}
+.tot-row:last-child{border:none;padding-top:10px}
+.tot-l{color:var(--color-text-secondary)}
+.tot-v{font-weight:500;color:var(--color-text-primary)}
+.tot-grand{font-size:15px;font-weight:500;color:#1D9E75}
+
+.ig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.ic{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.ic h4{font-size:13px;font-weight:500;margin-bottom:10px}
+.ii{font-size:11px;color:var(--color-text-secondary);padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);line-height:1.5}
+.ii:last-child{border:none}
+.ii strong{color:var(--color-text-primary);font-weight:500}
+
+.toolbar{display:flex;gap:8px;margin-bottom:14px}
+.tb-btn{padding:6px 12px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;font-family:var(--font-sans)}
+.tb-btn:hover{background:var(--color-background-secondary)}
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo">wander<span>pair</span></div>
+    <div class="tabs">
+      <button class="tab active" onclick="sw('ai')">AI</button>
+      <button class="tab" onclick="sw('manual')">Manual</button>
+      <button class="tab" onclick="sw('budget')">Budget</button>
+      <button class="tab" onclick="sw('info')">Info</button>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="tb-btn" onclick="exp()" style="font-size:11px;padding:4px 9px">Export</button>
+      <label class="tb-btn" style="font-size:11px;padding:4px 9px;cursor:pointer">Import<input type="file" accept=".json" style="display:none" onchange="imp(event)"></label>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="tab-ai" class="section active">
+      <div class="panel">
+        <div class="panel-title">Generate itinerary dengan AI</div>
+        <div class="form-row">
+          <div class="fg"><label>Hari di Vietnam</label><input type="number" id="vn" value="8" min="1" max="14"></div>
+          <div class="fg"><label>Hari di Singapore</label><input type="number" id="sg" value="1" min="1" max="7"></div>
+          <div class="fg"><label>Hari di Malaysia</label><input type="number" id="my" value="1" min="1" max="7"></div>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label>Budget</label>
+            <select id="bud">
+              <option value="budget">Budget (&lt;$50/hari)</option>
+              <option value="mid-range" selected>Mid-range ($50–120/hari)</option>
+              <option value="comfort">Comfort ($120+/hari)</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Fokus</label>
+            <select id="foc">
+              <option value="balanced" selected>Semua jenis (balanced)</option>
+              <option value="culinary">Kuliner & cafe</option>
+              <option value="nature">Alam & outdoor</option>
+              <option value="cultural">Budaya & sejarah</option>
+              <option value="romantic">Romantic & santai</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Urutan negara</label>
+            <select id="ord">
+              <option value="Singapore lalu Malaysia lalu Vietnam">SG → MY → VN</option>
+              <option value="Vietnam lalu Malaysia lalu Singapore">VN → MY → SG</option>
+              <option value="Singapore lalu Vietnam lalu Malaysia">SG → VN → MY</option>
+            </select>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--color-text-secondary);font-weight:500;margin-bottom:7px">Preferensi tambahan</div>
+        <div class="pref-row" id="prefs">
+          <button class="pref-tag" onclick="tp(this,'halal food')">Halal food</button>
+          <button class="pref-tag" onclick="tp(this,'hindari keramaian')">Hindari keramaian</button>
+          <button class="pref-tag" onclick="tp(this,'foto-friendly spots')">Foto-friendly</button>
+          <button class="pref-tag" onclick="tp(this,'street food lokal')">Street food lokal</button>
+          <button class="pref-tag" onclick="tp(this,'spa dan wellness')">Spa & wellness</button>
+          <button class="pref-tag" onclick="tp(this,'night life')">Night life</button>
+        </div>
+        <button class="gen-btn" id="gbtn" onclick="gen()">Generate itinerary ↗</button>
+      </div>
+      <div id="aiout"></div>
+    </div>
+
+    <div id="tab-manual" class="section">
+      <div class="toolbar">
+        <button class="tb-btn" onclick="addDay()">+ Tambah hari</button>
+      </div>
+      <div id="planner"></div>
+    </div>
+
+    <div id="tab-budget" class="section">
+      <div class="bg">
+        <div class="bc">
+          <h4>Singapore (SGD)</h4>
+          <div class="rate-row"><span class="rate-l">1 SGD =</span><span class="rate-v">Rp 11.900</span></div>
+          <div class="bi-row"><label>Akomodasi (SGD/malam)</label><input type="number" id="sgh" value="120" oninput="cb()"></div>
+          <div class="bi-row"><label>Makan + transport (SGD/hari)</label><input type="number" id="sgd" value="60" oninput="cb()"></div>
+          <div class="bi-row"><label>Jumlah malam</label><input type="number" id="sgn" value="1" oninput="cb()"></div>
+        </div>
+        <div class="bc">
+          <h4>Malaysia (MYR)</h4>
+          <div class="rate-row"><span class="rate-l">1 MYR =</span><span class="rate-v">Rp 3.400</span></div>
+          <div class="bi-row"><label>Akomodasi (MYR/malam)</label><input type="number" id="myh" value="200" oninput="cb()"></div>
+          <div class="bi-row"><label>Makan + transport (MYR/hari)</label><input type="number" id="myd" value="100" oninput="cb()"></div>
+          <div class="bi-row"><label>Jumlah malam</label><input type="number" id="myn" value="1" oninput="cb()"></div>
+        </div>
+        <div class="bc">
+          <h4>Vietnam (VND)</h4>
+          <div class="rate-row"><span class="rate-l">10.000 VND =</span><span class="rate-v">Rp 6.200</span></div>
+          <div class="bi-row"><label>Akomodasi (VND/malam)</label><input type="number" id="vnh" value="600000" oninput="cb()"></div>
+          <div class="bi-row"><label>Makan + transport (VND/hari)</label><input type="number" id="vnd2" value="300000" oninput="cb()"></div>
+          <div class="bi-row"><label>Jumlah malam</label><input type="number" id="vnn" value="8" oninput="cb()"></div>
+        </div>
+      </div>
+      <div class="total-panel" id="btotal"></div>
+    </div>
+
+    <div id="tab-info" class="section">
+      <div class="ig">
+        <div class="ic">
+          <h4>🇸🇬 Singapore</h4>
+          <div class="ii"><strong>Visa</strong><br>WNI bebas visa, maks 30 hari</div>
+          <div class="ii"><strong>Mata uang</strong><br>SGD (Singapore Dollar)</div>
+          <div class="ii"><strong>Transport</strong><br>MRT paling efisien, Grab tersedia</div>
+          <div class="ii"><strong>SIM card</strong><br>Singtel/StarHub tourist SIM di Changi ~SGD 15</div>
+          <div class="ii"><strong>Tips couple</strong><br>Gardens by the Bay malam hari, Jewel Changi, Hawker Centre untuk makan lokal</div>
+          <div class="ii"><strong>Darurat / KBRI</strong><br>+65 6737 7422</div>
+        </div>
+        <div class="ic">
+          <h4>🇲🇾 Malaysia</h4>
+          <div class="ii"><strong>Visa</strong><br>WNI bebas visa, maks 30 hari</div>
+          <div class="ii"><strong>Mata uang</strong><br>MYR (Malaysian Ringgit)</div>
+          <div class="ii"><strong>Transport</strong><br>Grab, MRT KL, monorail tersedia</div>
+          <div class="ii"><strong>SIM card</strong><br>Maxis/Celcom tourist SIM ~MYR 30</div>
+          <div class="ii"><strong>Tips couple</strong><br>KLCC malam, Batu Caves pagi hari, Jalan Alor untuk street food</div>
+          <div class="ii"><strong>Darurat / KBRI</strong><br>+60 3 2116 4000</div>
+        </div>
+        <div class="ic">
+          <h4>🇻🇳 Vietnam</h4>
+          <div class="ii"><strong>Visa</strong><br>E-visa wajib untuk WNI, apply online sebelum berangkat</div>
+          <div class="ii"><strong>Mata uang</strong><br>VND (Vietnamese Dong)</div>
+          <div class="ii"><strong>Transport</strong><br>Grab di kota besar, xe om untuk jarak dekat</div>
+          <div class="ii"><strong>SIM card</strong><br>Viettel tourist SIM ~VND 60.000</div>
+          <div class="ii"><strong>Tips couple</strong><br>Ha Long Bay cruise, Old Town Hoi An sore hari, egg coffee di Hanoi</div>
+          <div class="ii"><strong>Darurat / KBRI</strong><br>+84 24 3825 3353</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var sel=[];
+var days=[];
+try{days=JSON.parse(localStorage.getItem('wp2')||'[]')}catch(e){days=[]}
+
+function sw(t){
+  var names=['ai','manual','budget','info'];
+  document.querySelectorAll('.tab').forEach(function(el,i){el.classList.toggle('active',names[i]===t)});
+  document.querySelectorAll('.section').forEach(function(el){el.classList.remove('active')});
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='manual')rp();
+  if(t==='budget')cb();
+}
+
+function tp(el,v){
+  el.classList.toggle('on');
+  var i=sel.indexOf(v);
+  if(i>-1)sel.splice(i,1); else sel.push(v);
+}
+
+function gen(){
+  var vn=parseInt(document.getElementById('vn').value)||8;
+  var sg=parseInt(document.getElementById('sg').value)||1;
+  var my=parseInt(document.getElementById('my').value)||1;
+  var bud=document.getElementById('bud').value;
+  var foc=document.getElementById('foc').value;
+  var ord=document.getElementById('ord').value;
+  var pref=sel.length?sel.join(', '):'tidak ada';
+  var total=vn+sg+my;
+
+  var btn=document.getElementById('gbtn');
+  btn.disabled=true; btn.textContent='Generating...';
+  document.getElementById('aiout').innerHTML='<div class="panel"><div class="spinner-wrap"><div class="spinner"></div><div class="spinner-text">Claude sedang merencanakan perjalanan kalian...</div></div></div>';
+
+  var sys='Kamu adalah travel planner expert untuk couple Indonesia yang pergi pertama kali. Selalu balas HANYA dengan JSON valid saja. Jangan tambahkan teks apapun sebelum atau sesudah JSON. Jangan gunakan markdown code blocks.';
+
+  var prompt='Buat itinerary '+total+' hari untuk couple Indonesia pertama kali travelling ke '+ord+'. Rincian: '+vn+' hari di Vietnam, '+sg+' hari di Singapore, '+my+' hari di Malaysia. Budget: '+bud+'. Fokus perjalanan: '+foc+'. Preferensi: '+pref+'.\n\nUntuk setiap hari sertakan kota yang dikunjungi dan 4-5 aktivitas dengan nama tempat nyata yang bisa dikunjungi.\n\nFormat JSON yang harus dikembalikan (tanpa apapun di luar JSON ini):\n{"itinerary":[{"day":1,"country":"Vietnam","city":"Ho Chi Minh City","activities":[{"time":"08:00","activity":"Nama tempat — deskripsi singkat dan tips"}]}]}';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:4000,
+      system:sys,
+      messages:[{role:'user',content:prompt}]
+    })
+  })
+  .then(function(r){
+    if(!r.ok){
+      return r.json().then(function(e){
+        throw new Error('API error '+ r.status+': '+(e.error&&e.error.message||JSON.stringify(e)));
+      });
+    }
+    return r.json();
+  })
+  .then(function(data){
+    if(!data.content||!data.content.length){
+      throw new Error('Respons kosong dari API');
+    }
+    var raw=data.content.filter(function(c){return c.type==='text'}).map(function(c){return c.text}).join('');
+    var clean=raw.replace(/```json\s*/gi,'').replace(/```\s*/gi,'').trim();
+    var start=clean.indexOf('{');
+    var end=clean.lastIndexOf('}');
+    if(start===-1||end===-1) throw new Error('JSON tidak ditemukan dalam respons: '+clean.substring(0,200));
+    clean=clean.substring(start,end+1);
+    var parsed=JSON.parse(clean);
+    if(!parsed.itinerary||!parsed.itinerary.length) throw new Error('Format itinerary tidak valid');
+    renderResult(parsed.itinerary);
+    btn.disabled=false; btn.textContent='Generate itinerary ↗';
+  })
+  .catch(function(e){
+    document.getElementById('aiout').innerHTML='<div class="err-box">Error: '+e.message+'<br><br>Coba klik Generate lagi.</div>';
+    btn.disabled=false; btn.textContent='Generate itinerary ↗';
+  });
+}
+
+function renderResult(it){
+  var h='<div class="result-panel"><div class="result-header"><div class="result-title">Itinerary '+it.length+' hari</div><button class="use-btn" onclick="useIt()">Pakai di Manual ↗</button></div>';
+  it.forEach(function(day){
+    var cls=day.country==='Vietnam'?'vn':day.country==='Singapore'?'sg':'my';
+    h+='<div class="day-block"><div class="day-label">Hari '+day.day+' — '+day.city+' <span class="cbadge '+cls+'">'+day.country+'</span></div><div class="act-list">';
+    (day.activities||[]).forEach(function(a){
+      h+='<div class="act-item"><span>'+esc(a.activity||a.name||a.description||JSON.stringify(a))+'</span><span class="act-time">'+(a.time||'')+'</span></div>';
+    });
+    h+='</div></div>';
+  });
+  h+='</div>';
+  document.getElementById('aiout').innerHTML=h;
+  window._it=it;
+}
+
+function useIt(){
+  if(!window._it)return;
+  days=window._it.map(function(d){
+    return{label:'Hari '+d.day+' — '+d.city+' ('+d.country+')',activities:(d.activities||[]).map(function(a){return{time:a.time||'09:00',text:a.activity||a.name||''}})};
+  });
+  save(); sw('manual');
+}
+
+function rp(){
+  var el=document.getElementById('planner');
+  if(!days.length){el.innerHTML='<div class="panel" style="text-align:center;color:var(--color-text-secondary);font-size:13px;padding:32px">Belum ada itinerary. Generate dengan AI atau tambah hari manual.</div>';return;}
+  var h='';
+  days.forEach(function(day,di){
+    h+='<div class="day-card"><div class="day-head"><div class="day-head-l"><span class="day-num">'+esc(day.label)+'</span></div><span style="font-size:11px;color:var(--color-text-tertiary)">▾</span></div><div class="day-body" id="db'+di+'">';
+    (day.activities||[]).forEach(function(a,ai){
+      h+='<div class="act-row"><input class="time-in" type="time" value="'+esc(a.time||'')+'" onchange="ua('+di+','+ai+',\'time\',this.value)"><input class="act-in" type="text" value="'+esc(a.text||'')+'" onchange="ua('+di+','+ai+',\'text\',this.value)"><button class="del-btn" onclick="da('+di+','+ai+')">×</button></div>';
+    });
+    h+='<button class="add-btn" onclick="aa('+di+')">+ Aktivitas</button></div></div>';
+  });
+  el.innerHTML=h;
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ua(di,ai,f,v){days[di].activities[ai][f]=v;save()}
+function da(di,ai){days[di].activities.splice(ai,1);save();rp()}
+function aa(di){days[di].activities.push({time:'09:00',text:''});save();rp()}
+function addDay(){days.push({label:'Hari '+(days.length+1),activities:[{time:'09:00',text:''}]});save();rp()}
+function save(){try{localStorage.setItem('wp2',JSON.stringify(days))}catch(e){}}
+
+function cb(){
+  var sgh=parseFloat(document.getElementById('sgh').value)||0;
+  var sgd=parseFloat(document.getElementById('sgd').value)||0;
+  var sgn=parseFloat(document.getElementById('sgn').value)||0;
+  var myh=parseFloat(document.getElementById('myh').value)||0;
+  var myd=parseFloat(document.getElementById('myd').value)||0;
+  var myn=parseFloat(document.getElementById('myn').value)||0;
+  var vnh=parseFloat(document.getElementById('vnh').value)||0;
+  var vnd=parseFloat(document.getElementById('vnd2').value)||0;
+  var vnn=parseFloat(document.getElementById('vnn').value)||0;
+  var sg=(sgh*sgn+sgd*sgn)*11900;
+  var my=(myh*myn+myd*myn)*3400;
+  var vn=((vnh*vnn+vnd*vnn)/10000)*6200;
+  var tot=sg+my+vn;
+  document.getElementById('btotal').innerHTML=
+    '<div class="tot-row"><span class="tot-l">Singapore</span><span class="tot-v">Rp '+Math.round(sg).toLocaleString('id-ID')+'</span></div>'+
+    '<div class="tot-row"><span class="tot-l">Malaysia</span><span class="tot-v">Rp '+Math.round(my).toLocaleString('id-ID')+'</span></div>'+
+    '<div class="tot-row"><span class="tot-l">Vietnam</span><span class="tot-v">Rp '+Math.round(vn).toLocaleString('id-ID')+'</span></div>'+
+    '<div class="tot-row"><span class="tot-l" style="font-weight:500">Total 2 orang</span><span class="tot-grand">Rp '+Math.round(tot*2).toLocaleString('id-ID')+'</span></div>';
+}
+
+function exp(){
+  var b=new Blob([JSON.stringify({days:days,v:2,ts:Date.now()},null,2)],{type:'application/json'});
+  var u=URL.createObjectURL(b);
+  var a=document.createElement('a'); a.href=u; a.download='wanderpair.json'; a.click();
+  URL.revokeObjectURL(u);
+}
+function imp(e){
+  var f=e.target.files[0]; if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.days){days=d.days;save();sw('manual')}}catch(x){alert('File tidak valid')}};
+  r.readAsText(f);
+}
+
+cb();
+</script>
